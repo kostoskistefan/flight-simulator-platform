@@ -10,4 +10,6 @@
 
 #define UPDATE_SEND_PERIOD 80
 
+#define BUTTON_DEBOUNCE_TIME 30
+
 #endif // DEFINITIONS_H

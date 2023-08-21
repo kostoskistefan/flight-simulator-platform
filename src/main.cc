@@ -1,12 +1,17 @@
 #include "common.h"
 #include "tft.h"
 #include "yoke.h"
+#include "com_nav_radio.h"
+#include "elevator_trim.h"
 #include "engine_controls.h"
 #include "x_plane_interface.h"
 #include "flight_instruments.h"
 
 yoke_s yoke;
+elevator_trim_s elevator_trim;
 engine_controls_s engine_controls;
+com_nav_radio_s com_nav_radio;
+
 rref_reply_packet_s received_packet;
 
 unsigned long update_timer = 0;
@@ -115,9 +120,12 @@ void setup(void)
     uint8_t use_calibration = 0;
 
     yoke_initialize(&yoke, use_calibration);
+    elevator_trim_initialize(&elevator_trim);
     engine_controls_initialize(&engine_controls, use_calibration);
 
-    flight_instruments_initialize();
+    com_nav_radio_initialize(&com_nav_radio);
+
+    flight_instruments_initialize();    
 }
 
 void loop(void)
@@ -126,12 +134,15 @@ void loop(void)
 
     handle_received_x_plane_data();
 
+    elevator_trim_read(&elevator_trim);
+
     if (millis() - update_timer >= UPDATE_SEND_PERIOD)
     {
         yoke_read(&yoke);
         engine_controls_read(&engine_controls);
 
         yoke_send_update(&yoke);
+        elevator_trim_send_update(&elevator_trim);
         engine_controls_send_update(&engine_controls);
 
         update_timer = millis();
