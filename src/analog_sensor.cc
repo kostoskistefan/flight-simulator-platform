@@ -9,13 +9,17 @@ void analog_sensor_initialize(analog_sensor_s *analog_sensor, uint8_t pin, uint8
     analog_sensor->value = 0;
     analog_sensor->data_reference_path = NULL;
 
-    analog_sensor->input_range = (range_s){
-        .minimum = 1023 * use_calibration,
-        .maximum = 1023 * (1 - use_calibration)};
+    analog_sensor->input_range =
+        (range_s) {
+            .minimum = 1023 * use_calibration,
+            .maximum = 1023 * (1 - use_calibration)
+        };
 
-    analog_sensor->output_range = (range_s){
-        .minimum = 0,
-        .maximum = 1};
+    analog_sensor->output_range =
+        (range_s) {
+            .minimum = 0,
+            .maximum = 1
+        };
 
     pinMode(analog_sensor->pin, INPUT);
 }
@@ -37,7 +41,8 @@ void analog_sensor_read(analog_sensor_s *analog_sensor)
         analog_sensor->input_range.minimum,
         analog_sensor->input_range.maximum,
         analog_sensor->output_range.minimum,
-        analog_sensor->output_range.maximum);
+        analog_sensor->output_range.maximum
+    );
 }
 
 void analog_sensor_calibrate(analog_sensor_s *analog_sensor)
@@ -53,5 +58,8 @@ void analog_sensor_calibrate(analog_sensor_s *analog_sensor)
 
 void analog_sensor_send_update(analog_sensor_s *analog_sensor)
 {
-    x_plane_interface_send_data_reference_value(analog_sensor->data_reference_path, analog_sensor->value);
+    x_plane_interface_send_data_reference_value(
+        analog_sensor->data_reference_path,
+        analog_sensor->value
+    );
 }

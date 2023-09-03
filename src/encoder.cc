@@ -32,7 +32,7 @@ void encoder_set_data_reference_path(encoder_s *encoder, const char *data_refere
     encoder->data_reference_path = data_reference_path;
 }
 
-void encoder_read(encoder_s *encoder)
+void encoder_run(encoder_s *encoder)
 {
     encoder->pin_1_state = digitalRead(encoder->pin_1);
     encoder->pin_2_state = digitalRead(encoder->pin_2);
@@ -46,13 +46,14 @@ void encoder_read(encoder_s *encoder)
 
     encoder->pin_1_previous_state = encoder->pin_1_state;
     encoder->pin_2_previous_state = encoder->pin_2_state;
-}
 
-void encoder_send_update(encoder_s *encoder)
-{
     if (encoder->value_has_changed)
     {
-        x_plane_interface_send_data_reference_value(encoder->data_reference_path, encoder->value);
+        x_plane_interface_send_data_reference_value(
+            encoder->data_reference_path,
+            encoder->value
+        );
+        
         encoder->value_has_changed = 0;
     }
 }

@@ -1,22 +1,32 @@
 #ifndef FLIGHT_INSTRUMENTS_H
 #define FLIGHT_INSTRUMENTS_H
 
-#include <stdint.h>
+#include <lvgl.h>
+#include "x_plane_interface.h"
 
-void airspeed_indicator(void);
-void airspeed_indicator_set_value(uint8_t speed);
+typedef struct flight_instruments_s
+{
+    lv_obj_t *airspeed_indicator_meter;
+    lv_meter_indicator_t *airspeed_indicator_needle;
 
-void altimeter(void);
-void altimeter_set_value(int32_t altitude);
+    lv_obj_t *altimeter_meter;
+    lv_meter_indicator_t *altimeter_one_thousand_feet_needle;
+    lv_meter_indicator_t *altimeter_ten_thousand_feet_needle;
 
-void attitude_indicator(void);
-void attitude_indicator_set_roll_value(int8_t roll);
-void attitude_indicator_set_pitch_value(int8_t pitch);
+    lv_obj_t *vertical_speed_indicator_meter;
+    lv_meter_indicator_t *vertical_speed_indicator_needle;
 
-void vertical_speed_indicator(void);
-void vertical_speed_indicator_set_value(int32_t vertical_speed);
+    lv_obj_t *heading_meter;
+    lv_meter_indicator_t *heading_needle;
 
-void heading_indicator(void);
-void heading_indicator_set_value(uint16_t heading);
+    lv_obj_t *attitude_meter;
+    lv_meter_indicator_t *attitude_roll_needle;
+    lv_meter_indicator_t *attitude_pitch_needle;
+
+    rref_reply_packet_s received_packet;
+} flight_instruments_s;
+
+void flight_instruments_initialize(flight_instruments_s *flight_instruments);
+void flight_instruments_run(flight_instruments_s *flight_instruments);
 
 #endif // FLIGHT_INSTRUMENTS_H

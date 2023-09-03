@@ -7,7 +7,6 @@
 typedef encoder_s elevator_trim_s;
 
 void elevator_trim_initialize(elevator_trim_s *elevator_trim);
-void elevator_trim_read(elevator_trim_s *elevator_trim);
-void elevator_trim_send_update(elevator_trim_s *elevator_trim);
+void elevator_trim_run(elevator_trim_s *elevator_trim);
 
 #endif // ELEVATOR_TRIM_H

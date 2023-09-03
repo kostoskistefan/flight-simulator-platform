@@ -37,9 +37,14 @@ typedef enum data_reference_reply_index_e
 } data_reference_reply_index_e;
 
 void x_plane_interface_initialize(void);
-rref_reply_packet_s x_plane_interface_poll_for_packet(void);
 void x_plane_interface_send_data_reference_value(const char *data_reference_path, float value);
-void x_plane_interface_subscribe_to_data_reference(const char *data_reference_path, data_reference_reply_index_e data_reference_reply_index, uint8_t reply_frequency);
+void x_plane_interface_subscribe_to_data_reference(
+    const char *data_reference_path,
+    data_reference_reply_index_e data_reference_reply_index,
+    uint8_t reply_frequency
+);
+
+rref_reply_packet_s x_plane_interface_poll_for_packet(void);
 
 void x_plane_interface_send_udp_packet(const uint8_t *packet_header, uint16_t packet_size);
 

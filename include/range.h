@@ -1,7 +1,7 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include <stdint.h> 
+#include <stdint.h>
 
 typedef struct range_s
 {

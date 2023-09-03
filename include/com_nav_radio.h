@@ -22,8 +22,6 @@ typedef struct com_nav_radio_s
 } com_nav_radio_s;
 
 void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio);
-void com_nav_radio_read(com_nav_radio_s *com_nav_radio);
-void com_nav_radio_send_update(com_nav_radio_s *com_nav_radio);
-void com_nav_radio_set_frequency_for_display(com_nav_radio_s *com_nav_radio, uint8_t display_number, uint32_t frequency);
+void com_nav_radio_run(com_nav_radio_s *com_nav_radio);
 
 #endif // COM_NAV_RADIO_H

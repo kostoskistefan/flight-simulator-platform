@@ -9,7 +9,14 @@ static char udp_receive_buffer[1024];
 void x_plane_interface_initialize(void)
 {
     WiFi.mode(WIFI_STA);
-    WiFi.config(X_PLANE_CONTROLLER_IP, X_PLANE_COMPUTER_IP, {255, 255, 255, 0}, X_PLANE_COMPUTER_IP);
+
+    WiFi.config(
+        X_PLANE_CONTROLLER_IP,
+        X_PLANE_COMPUTER_IP,
+        { 255, 255, 255, 0 },
+        X_PLANE_COMPUTER_IP
+    );
+
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     while (WiFi.status() != WL_CONNECTED)
@@ -27,10 +34,17 @@ void x_plane_interface_send_data_reference_value(const char *data_reference_path
     memset(packet.path, 0x20, sizeof(packet.path));
     strcpy(packet.path, data_reference_path);
 
-    x_plane_interface_send_udp_packet((uint8_t *) packet.header, sizeof(packet) - sizeof(packet.padding));
+    x_plane_interface_send_udp_packet(
+        (uint8_t *) packet.header,
+        sizeof(packet) - sizeof(packet.padding)
+    );
 }
 
-void x_plane_interface_subscribe_to_data_reference(const char *data_reference_path, data_reference_reply_index_e data_reference_reply_index, uint8_t reply_frequency)
+void x_plane_interface_subscribe_to_data_reference(
+    const char *data_reference_path,
+    data_reference_reply_index_e data_reference_reply_index,
+    uint8_t reply_frequency
+)
 {
     rref_packet_s packet;
 
@@ -40,7 +54,10 @@ void x_plane_interface_subscribe_to_data_reference(const char *data_reference_pa
     memset(packet.path, 0x20, sizeof(packet.path));
     strcpy(packet.path, data_reference_path);
 
-    x_plane_interface_send_udp_packet((uint8_t *) packet.header, sizeof(packet) - sizeof(packet.padding));
+    x_plane_interface_send_udp_packet(
+        (uint8_t *) packet.header,
+        sizeof(packet) - sizeof(packet.padding)
+    );
 }
 
 void x_plane_interface_send_udp_packet(const uint8_t *packet_header, uint16_t packet_size)
@@ -62,15 +79,15 @@ rref_reply_packet_s x_plane_interface_poll_for_packet(void)
         {
             // for (int offset = 5; offset < packet_size; offset += 8)
             // {
-                rref_reply_packet_s packet = {
-                    .index = (int8_t) (*((int *)(udp_receive_buffer + 5))),
-                    .value = *((float *)(udp_receive_buffer + 9))
-                };
+            rref_reply_packet_s packet = {
+                .index = (int8_t) (*((int *) (udp_receive_buffer + 5))),
+                .value = *((float *) (udp_receive_buffer + 9))
+            };
 
-                return packet;
+            return packet;
             // }
         }
     }
 
-    return (rref_reply_packet_s) {.index = -1, .value = -1};
+    return (rref_reply_packet_s) { .index = -1, .value = -1 };
 }

@@ -14,17 +14,17 @@ void button_initialize(button_s *button, uint8_t pin)
 void button_read(button_s *button)
 {
     uint32_t current_time = millis();
-    
+
     if (current_time - button->time_since_last_change < BUTTON_DEBOUNCE_TIME)
         button->state_has_changed = 0;
-    
+
     else
     {
         button->last_state = button->state;
         button->state = digitalRead(button->pin);
         button->state_has_changed = (button->state != button->last_state);
-        
-        if (button->state_has_changed) 
+
+        if (button->state_has_changed)
             button->time_since_last_change = current_time;
     }
 }
