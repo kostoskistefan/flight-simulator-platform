@@ -2,6 +2,7 @@
 #define DEFINITIONS_H
 
 #define X_PLANE_PORT          49000
+#define X_PLANE_GATEWAY       { 192, 168, 12, 1 }
 #define X_PLANE_COMPUTER_IP   { 192, 168, 12, 1 }
 #define X_PLANE_CONTROLLER_IP { 192, 168, 12, 100 }
 

@@ -4,7 +4,6 @@
 #include "definitions.h"
 
 WiFiUDP udp;
-static char udp_receive_buffer[1024];
 
 void x_plane_interface_initialize(void)
 {
@@ -12,9 +11,8 @@ void x_plane_interface_initialize(void)
 
     WiFi.config(
         X_PLANE_CONTROLLER_IP,
-        X_PLANE_COMPUTER_IP,
-        { 255, 255, 255, 0 },
-        X_PLANE_COMPUTER_IP
+        X_PLANE_GATEWAY,
+        { 255, 255, 255, 0 }
     );
 
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -67,27 +65,64 @@ void x_plane_interface_send_udp_packet(const uint8_t *packet_header, uint16_t pa
     udp.endPacket();
 }
 
-rref_reply_packet_s x_plane_interface_poll_for_packet(void)
+void x_plane_interface_poll_for_packet(rref_reply_packet_s *packets)
 {
-    int packet_size = udp.parsePacket();
+    static char udp_receive_buffer[1024];
 
-    if (packet_size)
+    int packetSize = udp.parsePacket();
+
+    if (packetSize)
     {
-        udp.read(udp_receive_buffer, packet_size);
+        udp.read(udp_receive_buffer, packetSize);
+        String type = String(udp_receive_buffer).substring(0, 4);
 
-        if (strncmp(udp_receive_buffer, "RREF", 5) == 0)
+        if (type == "RREF")
         {
-            // for (int offset = 5; offset < packet_size; offset += 8)
-            // {
-            rref_reply_packet_s packet = {
-                .index = (int8_t) (*((int *) (udp_receive_buffer + 5))),
-                .value = *((float *) (udp_receive_buffer + 9))
-            };
+            for (int offset = 5; offset < packetSize; offset += 8)
+            {
+                int index = *((int *)(udp_receive_buffer + offset));
+                float value = *((float *)(udp_receive_buffer + offset + 4));
 
-            return packet;
-            // }
+                packets[(offset - 5) / 8] = {
+                    .index = (int8_t) ((value == 0) ? -1 : index),
+                    .value = value
+                };
+            }
         }
+        
+        else packets[0].index = -1;
     }
 
-    return (rref_reply_packet_s) { .index = -1, .value = -1 };
+    else packets[0].index = -1;
+
+    // uint16_t packet_size = udp.parsePacket();
+
+    // if (!packet_size)
+    // {
+    //     packets[0].index = -1;
+    //     return;
+    // }
+
+    // udp.read(udp_receive_buffer, packet_size);
+
+    // if (strncmp(udp_receive_buffer, "RREF", 5) != 0)
+    // {
+    //     packets[0].index = -1;
+    //     return;
+    // }
+
+    // for (uint16_t i = 0, offset = 5; offset < packet_size; ++i, offset += 8)
+    // {
+    //     // packets[i] = {
+    //     //     .index = (int8_t) (*((int *) (udp_receive_buffer + offset))),
+    //     //     .value = *((float *) (udp_receive_buffer + offset + 4))
+    //     // };
+
+    //     Serial.print("Packet I: ");
+    //     Serial.print(i);
+    //     Serial.print(", Index: ");
+    //     Serial.print((int8_t) (*((int *) (udp_receive_buffer + offset))));
+    //     Serial.print(", Value: ");
+    //     Serial.println(*((float *) (udp_receive_buffer + offset + 4)));
+    // }
 }

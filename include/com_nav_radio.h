@@ -4,6 +4,7 @@
 #include "button.h"
 #include "encoder.h"
 #include "LedControl_SW_SPI.h"
+#include "x_plane_interface.h"
 
 typedef struct com_nav_radio_s
 {
@@ -22,6 +23,6 @@ typedef struct com_nav_radio_s
 } com_nav_radio_s;
 
 void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio);
-void com_nav_radio_run(com_nav_radio_s *com_nav_radio);
+void com_nav_radio_run(com_nav_radio_s *com_nav_radio, rref_reply_packet_s *received_packets);
 
 #endif // COM_NAV_RADIO_H

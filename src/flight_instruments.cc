@@ -58,22 +58,20 @@ void flight_instruments_initialize(flight_instruments_s *flight_instruments)
     tft_timer_handler();
 }
 
-void flight_instruments_run(flight_instruments_s *flight_instruments)
+void flight_instruments_run(flight_instruments_s *flight_instruments, rref_reply_packet_s *received_packet)
 {
-    flight_instruments->received_packet = x_plane_interface_poll_for_packet();
-
     tft_timer_handler();
 
-    if (flight_instruments->received_packet.index == -1)
+    if (received_packet->index == -1)
         return;
 
-    switch (flight_instruments->received_packet.index)
+    switch (received_packet->index)
     {
         case DATA_REFERENCE_REPLY_INDEX_AIRSPEED:
             lv_meter_set_indicator_value(
                 flight_instruments->airspeed_indicator_meter,
                 flight_instruments->airspeed_indicator_needle,
-                flight_instruments->received_packet.value
+                received_packet->value
             );
             break;
 
@@ -81,12 +79,12 @@ void flight_instruments_run(flight_instruments_s *flight_instruments)
             lv_meter_set_indicator_value(
                 flight_instruments->altimeter_meter,
                 flight_instruments->altimeter_one_thousand_feet_needle,
-                (((int32_t) (flight_instruments->received_packet.value)) / 10) % 100
+                (((int32_t) (received_packet->value)) / 10) % 100
             );
             lv_meter_set_indicator_value(
                 flight_instruments->altimeter_meter,
                 flight_instruments->altimeter_ten_thousand_feet_needle,
-                (((int32_t) (flight_instruments->received_packet.value)) / 100) % 100
+                (((int32_t) (received_packet->value)) / 100) % 100
             );
             break;
 
@@ -94,7 +92,7 @@ void flight_instruments_run(flight_instruments_s *flight_instruments)
             lv_meter_set_indicator_value(
                 flight_instruments->attitude_meter,
                 flight_instruments->attitude_roll_needle,
-                flight_instruments->received_packet.value
+                received_packet->value
             );
             break;
 
@@ -102,7 +100,7 @@ void flight_instruments_run(flight_instruments_s *flight_instruments)
             lv_meter_set_indicator_value(
                 flight_instruments->attitude_meter,
                 flight_instruments->attitude_pitch_needle,
-                flight_instruments->received_packet.value
+                received_packet->value
             );
             break;
 
@@ -110,7 +108,7 @@ void flight_instruments_run(flight_instruments_s *flight_instruments)
             lv_meter_set_indicator_value(
                 flight_instruments->heading_meter,
                 flight_instruments->heading_needle,
-                ((int32_t) (flight_instruments->received_packet.value)) % 360
+                ((int32_t) (received_packet->value)) % 360
             );
             break;
 
@@ -118,7 +116,7 @@ void flight_instruments_run(flight_instruments_s *flight_instruments)
             lv_meter_set_indicator_value(
                 flight_instruments->vertical_speed_indicator_meter,
                 flight_instruments->vertical_speed_indicator_needle,
-                flight_instruments->received_packet.value
+                received_packet->value
             );
             break;
 

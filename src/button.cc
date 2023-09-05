@@ -8,7 +8,7 @@ void button_initialize(button_s *button, uint8_t pin)
     button->last_state = 0;
     button->state_has_changed = 0;
     button->time_since_last_change = millis();
-    pinMode(button->pin, INPUT_PULLDOWN);
+    pinMode(button->pin, INPUT_PULLUP);
 }
 
 void button_read(button_s *button)

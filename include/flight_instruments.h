@@ -22,11 +22,9 @@ typedef struct flight_instruments_s
     lv_obj_t *attitude_meter;
     lv_meter_indicator_t *attitude_roll_needle;
     lv_meter_indicator_t *attitude_pitch_needle;
-
-    rref_reply_packet_s received_packet;
 } flight_instruments_s;
 
 void flight_instruments_initialize(flight_instruments_s *flight_instruments);
-void flight_instruments_run(flight_instruments_s *flight_instruments);
+void flight_instruments_run(flight_instruments_s *flight_instruments, rref_reply_packet_s *received_packet);
 
 #endif // FLIGHT_INSTRUMENTS_H

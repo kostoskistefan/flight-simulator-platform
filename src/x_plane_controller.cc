@@ -8,31 +8,39 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller);
 
 void x_plane_controller_initialize(x_plane_controller_s *x_plane_controller)
 {
-    analogSetWidth(10);
-    analogReadResolution(10);
+    // analogSetWidth(10);
+    // analogReadResolution(10);
 
-    pinMode(BOOT_INTO_CALIBRATION_MODE_PIN, INPUT_PULLDOWN);
-    uint8_t use_calibration = digitalRead(BOOT_INTO_CALIBRATION_MODE_PIN);
+    // pinMode(BOOT_INTO_CALIBRATION_MODE_PIN, INPUT_PULLDOWN);
+    // uint8_t use_calibration = digitalRead(BOOT_INTO_CALIBRATION_MODE_PIN);
 
-    x_plane_interface_initialize();
+    // x_plane_interface_initialize();
+    
+    // for (uint8_t i = 0; i < 15; ++i)
+    // {
+    //     x_plane_controller->received_packets[i].index = -1;
+    //     x_plane_controller->received_packets[i].value = -1;
+    // }
 
-    yoke_initialize(&x_plane_controller->yoke, use_calibration);
+    // yoke_initialize(&x_plane_controller->yoke, use_calibration);
     com_nav_radio_initialize(&x_plane_controller->com_nav_radio);
-    elevator_trim_initialize(&x_plane_controller->elevator_trim);
-    engine_controls_initialize(&x_plane_controller->engine_controls, use_calibration);
-    flight_instruments_initialize(&x_plane_controller->flight_instruments);
+    // elevator_trim_initialize(&x_plane_controller->elevator_trim);
+    // engine_controls_initialize(&x_plane_controller->engine_controls, use_calibration);
+    // flight_instruments_initialize(&x_plane_controller->flight_instruments);
 
-    if (use_calibration)
-        x_plane_controller_calibrate(x_plane_controller);
+    // if (use_calibration)
+    //     x_plane_controller_calibrate(x_plane_controller);
 }
 
 void x_plane_controller_run(x_plane_controller_s *x_plane_controller)
 {
-    yoke_run(&x_plane_controller->yoke);
-    com_nav_radio_run(&x_plane_controller->com_nav_radio);
-    elevator_trim_run(&x_plane_controller->elevator_trim);
-    engine_controls_run(&x_plane_controller->engine_controls);
-    flight_instruments_run(&x_plane_controller->flight_instruments);
+    // x_plane_interface_poll_for_packet(x_plane_controller->received_packets);
+
+    // yoke_run(&x_plane_controller->yoke);
+    com_nav_radio_run(&x_plane_controller->com_nav_radio, x_plane_controller->received_packets);
+    // elevator_trim_run(&x_plane_controller->elevator_trim);
+    // engine_controls_run(&x_plane_controller->engine_controls);
+    // flight_instruments_run(&x_plane_controller->flight_instruments, &x_plane_controller->received_packet);
 } 
 
 void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
