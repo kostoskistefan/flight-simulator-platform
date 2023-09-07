@@ -30,12 +30,17 @@ void tft_initialize(void)
     lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), LV_PART_MAIN);
 }
 
+void tft_clear_screen(void)
+{
+    lv_obj_clean(lv_scr_act());
+}
+
 void tft_timer_handler(void)
 {
     lv_timer_handler();
 }
 
-void tft_sensor_calibration(float value, int32_t minimum, int32_t maximum, const char *sensor_name)
+void tft_sensor_calibration(uint16_t value, int32_t minimum, int32_t maximum, const char *sensor_name)
 {
     static lv_obj_t *calibrate_label = lv_label_create(lv_scr_act());
     static lv_obj_t *sensor_name_label = lv_label_create(lv_scr_act());
@@ -61,19 +66,19 @@ void tft_sensor_calibration(float value, int32_t minimum, int32_t maximum, const
 
         // Value name label
         lv_label_set_text(value_name_label, "Value:");
-        lv_obj_align(value_name_label, LV_ALIGN_LEFT_MID, 50, -80);
+        lv_obj_align(value_name_label, LV_ALIGN_BOTTOM_LEFT, 50, -80);
         lv_obj_set_style_text_font(value_name_label, &lv_font_montserrat_12, 0);
         lv_obj_set_style_text_color(value_name_label, lv_color_white(), LV_PART_MAIN);
 
         // Minimum name label
         lv_label_set_text(minimum_name_label, "Minimum:");
-        lv_obj_align(minimum_name_label, LV_ALIGN_LEFT_MID, 50, -60);
+        lv_obj_align(minimum_name_label, LV_ALIGN_BOTTOM_LEFT, 50, -60);
         lv_obj_set_style_text_font(minimum_name_label, &lv_font_montserrat_12, 0);
         lv_obj_set_style_text_color(minimum_name_label, lv_color_white(), LV_PART_MAIN);
 
         // Maximum name label
         lv_label_set_text(maximum_name_label, "Maximum:");
-        lv_obj_align(maximum_name_label, LV_ALIGN_LEFT_MID, 50, -40);
+        lv_obj_align(maximum_name_label, LV_ALIGN_BOTTOM_LEFT, 50, -40);
         lv_obj_set_style_text_font(maximum_name_label, &lv_font_montserrat_12, 0);
         lv_obj_set_style_text_color(maximum_name_label, lv_color_white(), LV_PART_MAIN);
 
@@ -97,6 +102,8 @@ void tft_sensor_calibration(float value, int32_t minimum, int32_t maximum, const
     lv_label_set_text_fmt(current_value_label, "%d", value);
     lv_label_set_text_fmt(minimum_current_value_label, "%d", minimum);
     lv_label_set_text_fmt(maximum_current_value_label, "%d", maximum);
+
+    lv_timer_handler();
 }
 
 void tft_flush(lv_disp_drv_t *display, const lv_area_t *area, lv_color_t *color_p)

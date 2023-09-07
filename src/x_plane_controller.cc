@@ -8,39 +8,46 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller);
 
 void x_plane_controller_initialize(x_plane_controller_s *x_plane_controller)
 {
-    // analogSetWidth(10);
-    // analogReadResolution(10);
+    analogReadResolution(10);
 
-    // pinMode(BOOT_INTO_CALIBRATION_MODE_PIN, INPUT_PULLDOWN);
-    // uint8_t use_calibration = digitalRead(BOOT_INTO_CALIBRATION_MODE_PIN);
+    button_initialize(
+        &x_plane_controller->button_calibration_mode, 
+        COM_NAV_RADIO_COM_FREQUENCY_TRANSFER_BUTTON_PIN
+    );
 
-    // x_plane_interface_initialize();
+    uint8_t boot_into_calibration_mode = !digitalRead(x_plane_controller->button_calibration_mode.pin);
+
+    x_plane_interface_initialize();
     
-    // for (uint8_t i = 0; i < 15; ++i)
-    // {
-    //     x_plane_controller->received_packets[i].index = -1;
-    //     x_plane_controller->received_packets[i].value = -1;
-    // }
+    uint8_t packet_array_length = sizeof(x_plane_controller->received_packets) / sizeof(x_plane_controller->received_packets[0]);
 
-    // yoke_initialize(&x_plane_controller->yoke, use_calibration);
+    for (uint8_t i = 0; i < packet_array_length; ++i)
+    {
+        x_plane_controller->received_packets[i].index = -1;
+        x_plane_controller->received_packets[i].value = -1;
+    }
+
+    tft_initialize();
+    yoke_initialize(&x_plane_controller->yoke, boot_into_calibration_mode);
     com_nav_radio_initialize(&x_plane_controller->com_nav_radio);
-    // elevator_trim_initialize(&x_plane_controller->elevator_trim);
-    // engine_controls_initialize(&x_plane_controller->engine_controls, use_calibration);
-    // flight_instruments_initialize(&x_plane_controller->flight_instruments);
+    elevator_trim_initialize(&x_plane_controller->elevator_trim);
+    engine_controls_initialize(&x_plane_controller->engine_controls, boot_into_calibration_mode);
 
-    // if (use_calibration)
-    //     x_plane_controller_calibrate(x_plane_controller);
+    if (boot_into_calibration_mode)
+        x_plane_controller_calibrate(x_plane_controller);
+
+    flight_instruments_initialize(&x_plane_controller->flight_instruments);
 }
 
 void x_plane_controller_run(x_plane_controller_s *x_plane_controller)
 {
-    // x_plane_interface_poll_for_packet(x_plane_controller->received_packets);
+    x_plane_interface_poll_for_packet(x_plane_controller->received_packets);
 
-    // yoke_run(&x_plane_controller->yoke);
+    yoke_run(&x_plane_controller->yoke);
     com_nav_radio_run(&x_plane_controller->com_nav_radio, x_plane_controller->received_packets);
-    // elevator_trim_run(&x_plane_controller->elevator_trim);
-    // engine_controls_run(&x_plane_controller->engine_controls);
-    // flight_instruments_run(&x_plane_controller->flight_instruments, &x_plane_controller->received_packet);
+    elevator_trim_run(&x_plane_controller->elevator_trim);
+    engine_controls_run(&x_plane_controller->engine_controls);
+    flight_instruments_run(&x_plane_controller->flight_instruments, x_plane_controller->received_packets);
 } 
 
 void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
@@ -54,19 +61,20 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
         SENSOR_INDEX_LAST
     } sensor_index_e;
 
-    uint32_t sensor_calibration_timer = 0;
     sensor_index_e sensor_index = SENSOR_INDEX_YOKE_ROLL;
+
+    tft_clear_screen();
 
     while (1)
     {
-        if (millis() - sensor_calibration_timer >= CALIBRATION_PERIOD_FOR_ONE_SENSOR)
+        button_read(&x_plane_controller->button_calibration_mode);
+
+        if (button_is_pressed(&x_plane_controller->button_calibration_mode))
         {
             sensor_index = (sensor_index_e) (sensor_index + 1);
 
             if (sensor_index == SENSOR_INDEX_LAST)
                 break;
-
-            sensor_calibration_timer = millis();
         }
 
         switch (sensor_index)
@@ -74,7 +82,7 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
             case SENSOR_INDEX_YOKE_ROLL:
                 yoke_calibrate_roll(&x_plane_controller->yoke);
                 tft_sensor_calibration(
-                    x_plane_controller->yoke.roll.value,
+                    x_plane_controller->yoke.roll.raw_value,
                     x_plane_controller->yoke.roll.input_range.minimum,
                     x_plane_controller->yoke.roll.input_range.maximum,
                     "Yoke Roll"
@@ -84,7 +92,7 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
             case SENSOR_INDEX_YOKE_PITCH:
                 yoke_calibrate_pitch(&x_plane_controller->yoke);
                 tft_sensor_calibration(
-                    x_plane_controller->yoke.pitch.value,
+                    x_plane_controller->yoke.pitch.raw_value,
                     x_plane_controller->yoke.pitch.input_range.minimum,
                     x_plane_controller->yoke.pitch.input_range.maximum,
                     "Yoke Pitch"
@@ -94,7 +102,7 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
             case SENSOR_INDEX_ENGINE_CONTROLS_MIXTURE:
                 engine_controls_calibrate_mixture(&x_plane_controller->engine_controls);
                 tft_sensor_calibration(
-                    x_plane_controller->engine_controls.mixture.value,
+                    x_plane_controller->engine_controls.mixture.raw_value,
                     x_plane_controller->engine_controls.mixture.input_range.minimum,
                     x_plane_controller->engine_controls.mixture.input_range.maximum,
                     "Engine Controls Mixture"
@@ -104,12 +112,16 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
             case SENSOR_INDEX_ENGINE_CONTROLS_THROTTLE:
                 engine_controls_calibrate_throttle(&x_plane_controller->engine_controls);
                 tft_sensor_calibration(
-                    x_plane_controller->engine_controls.throttle.value,
+                    x_plane_controller->engine_controls.throttle.raw_value,
                     x_plane_controller->engine_controls.throttle.input_range.minimum,
                     x_plane_controller->engine_controls.throttle.input_range.maximum,
                     "Engine Controls Throttle"
                 );
                 break;
         }
+
+        delay(100);
     }
+
+    tft_clear_screen();
 }

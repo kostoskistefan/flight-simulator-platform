@@ -31,5 +31,5 @@ void button_read(button_s *button)
 
 uint8_t button_is_pressed(button_s *button)
 {
-    return (button->state && button->state_has_changed);
+    return (!button->state && button->state_has_changed);
 }

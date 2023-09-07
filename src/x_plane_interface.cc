@@ -17,6 +17,8 @@ void x_plane_interface_initialize(void)
 
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
+    #warning Add WiFi Timeout
+    
     while (WiFi.status() != WL_CONNECTED)
         delay(500);
 

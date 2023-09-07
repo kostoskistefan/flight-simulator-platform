@@ -11,6 +11,12 @@ void flight_instruments_set_meter_style(lv_obj_t *meter, lv_color_t highlight_co
 
 void flight_instruments_initialize(flight_instruments_s *flight_instruments)
 {
+    flight_instruments_airspeed_indicator(flight_instruments);
+    flight_instruments_altimeter(flight_instruments);
+    flight_instruments_attitude_indicator(flight_instruments);
+    flight_instruments_heading_indicator(flight_instruments);
+    flight_instruments_vertical_speed_indicator(flight_instruments);
+
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/airspeed_kts_pilot",
         DATA_REFERENCE_REPLY_INDEX_AIRSPEED,
@@ -46,82 +52,75 @@ void flight_instruments_initialize(flight_instruments_s *flight_instruments)
         DATA_REFERENCE_REPLY_INDEX_VERTICAL_SPEED,
         2
     );
-
-    tft_initialize();
-
-    flight_instruments_airspeed_indicator(flight_instruments);
-    flight_instruments_altimeter(flight_instruments);
-    flight_instruments_attitude_indicator(flight_instruments);
-    flight_instruments_heading_indicator(flight_instruments);
-    flight_instruments_vertical_speed_indicator(flight_instruments);
-
-    tft_timer_handler();
 }
 
-void flight_instruments_run(flight_instruments_s *flight_instruments, rref_reply_packet_s *received_packet)
+void flight_instruments_run(flight_instruments_s *flight_instruments, rref_reply_packet_s *received_packets)
 {
     tft_timer_handler();
 
-    if (received_packet->index == -1)
+    if (received_packets[0].index == -1)
         return;
 
-    switch (received_packet->index)
+    for (uint8_t i = 0; i < MAXIMUM_PACKETS_TO_RECEIVE; ++i)
     {
-        case DATA_REFERENCE_REPLY_INDEX_AIRSPEED:
-            lv_meter_set_indicator_value(
-                flight_instruments->airspeed_indicator_meter,
-                flight_instruments->airspeed_indicator_needle,
-                received_packet->value
-            );
-            break;
+        switch (received_packets[i].index)
+        {
+            case DATA_REFERENCE_REPLY_INDEX_AIRSPEED:
+                lv_meter_set_indicator_value(
+                    flight_instruments->airspeed_indicator_meter,
+                    flight_instruments->airspeed_indicator_needle,
+                    received_packets[i].value
+                );
+                break;
 
-        case DATA_REFERENCE_REPLY_INDEX_ALTITUDE:
-            lv_meter_set_indicator_value(
-                flight_instruments->altimeter_meter,
-                flight_instruments->altimeter_one_thousand_feet_needle,
-                (((int32_t) (received_packet->value)) / 10) % 100
-            );
-            lv_meter_set_indicator_value(
-                flight_instruments->altimeter_meter,
-                flight_instruments->altimeter_ten_thousand_feet_needle,
-                (((int32_t) (received_packet->value)) / 100) % 100
-            );
-            break;
+            case DATA_REFERENCE_REPLY_INDEX_ALTITUDE:
+                lv_meter_set_indicator_value(
+                    flight_instruments->altimeter_meter,
+                    flight_instruments->altimeter_one_thousand_feet_needle,
+                    (((int32_t) (received_packets[i].value)) / 10) % 100
+                );
+                lv_meter_set_indicator_value(
+                    flight_instruments->altimeter_meter,
+                    flight_instruments->altimeter_ten_thousand_feet_needle,
+                    (((int32_t) (received_packets[i].value)) / 100) % 100
+                );
+                break;
 
-        case DATA_REFERENCE_REPLY_INDEX_ATTITUDE_ROLL:
-            lv_meter_set_indicator_value(
-                flight_instruments->attitude_meter,
-                flight_instruments->attitude_roll_needle,
-                received_packet->value
-            );
-            break;
+            case DATA_REFERENCE_REPLY_INDEX_ATTITUDE_ROLL:
+                lv_meter_set_indicator_value(
+                    flight_instruments->attitude_meter,
+                    flight_instruments->attitude_roll_needle,
+                    received_packets[i].value
+                );
+                break;
 
-        case DATA_REFERENCE_REPLY_INDEX_ATTITUDE_PITCH:
-            lv_meter_set_indicator_value(
-                flight_instruments->attitude_meter,
-                flight_instruments->attitude_pitch_needle,
-                received_packet->value
-            );
-            break;
+            case DATA_REFERENCE_REPLY_INDEX_ATTITUDE_PITCH:
+                lv_meter_set_indicator_value(
+                    flight_instruments->attitude_meter,
+                    flight_instruments->attitude_pitch_needle,
+                    received_packets[i].value
+                );
+                break;
 
-        case DATA_REFERENCE_REPLY_INDEX_HEADING:
-            lv_meter_set_indicator_value(
-                flight_instruments->heading_meter,
-                flight_instruments->heading_needle,
-                ((int32_t) (received_packet->value)) % 360
-            );
-            break;
+            case DATA_REFERENCE_REPLY_INDEX_HEADING:
+                lv_meter_set_indicator_value(
+                    flight_instruments->heading_meter,
+                    flight_instruments->heading_needle,
+                    ((int32_t) (received_packets[i].value)) % 360
+                );
+                break;
 
-        case DATA_REFERENCE_REPLY_INDEX_VERTICAL_SPEED:
-            lv_meter_set_indicator_value(
-                flight_instruments->vertical_speed_indicator_meter,
-                flight_instruments->vertical_speed_indicator_needle,
-                received_packet->value
-            );
-            break;
+            case DATA_REFERENCE_REPLY_INDEX_VERTICAL_SPEED:
+                lv_meter_set_indicator_value(
+                    flight_instruments->vertical_speed_indicator_meter,
+                    flight_instruments->vertical_speed_indicator_needle,
+                    received_packets[i].value
+                );
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
 }
 

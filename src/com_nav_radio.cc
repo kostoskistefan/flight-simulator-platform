@@ -9,7 +9,7 @@ void com_nav_radio_set_frequency_for_display(
 
 void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
 {
-    com_nav_radio->display.begin(TFT_MOSI, TFT_SCLK, COM_NAV_RADIO_DISPLAY_PIN_CS, 4);
+    com_nav_radio->display.begin(SPI_MOSI, SPI_SCLK, COM_NAV_RADIO_DISPLAY_PIN_CS, 4);
 
     for (uint8_t i = 0; i < 4; ++i)
     {
@@ -21,25 +21,25 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/com1_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_COM_FREQUENCY,
-        1
+        10
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/com1_stdby_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_COM_STANDBY_FREQUENCY,
-        1
+        10
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/nav1_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_NAV_FREQUENCY,
-        1
+        10
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/nav1_stdby_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_NAV_STANDBY_FREQUENCY,
-        1
+        10
     );
 
     button_initialize(
@@ -56,8 +56,9 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
         &com_nav_radio->encoder_com_khz,
         COM_NAV_RADIO_COM_KHZ_ENCODER_PIN_1,
         COM_NAV_RADIO_COM_KHZ_ENCODER_PIN_2,
-        (range_s) {.minimum = 0, .maximum = 1000},
-        10
+        (range_s) {.minimum = 0, .maximum = 990},
+        10,
+        "sim/cockpit2/radios/actuators/com1_standby_frequency_khz"
     );
 
     encoder_initialize(
@@ -65,15 +66,17 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
         COM_NAV_RADIO_COM_MHZ_ENCODER_PIN_1,
         COM_NAV_RADIO_COM_MHZ_ENCODER_PIN_2,
         (range_s) {.minimum = 118, .maximum = 136},
-        1
+        1,
+        "sim/cockpit2/radios/actuators/com1_standby_frequency_Mhz"
     );
 
     encoder_initialize(
         &com_nav_radio->encoder_nav_khz,
         COM_NAV_RADIO_NAV_KHZ_ENCODER_PIN_1,
         COM_NAV_RADIO_NAV_KHZ_ENCODER_PIN_2,
-        (range_s) {.minimum = 0, .maximum = 1000},
-        10
+        (range_s) {.minimum = 0, .maximum = 95},
+        5,
+        "sim/cockpit2/radios/actuators/nav1_standby_frequency_khz"
     );
 
     encoder_initialize(
@@ -81,26 +84,7 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
         COM_NAV_RADIO_NAV_MHZ_ENCODER_PIN_1,
         COM_NAV_RADIO_NAV_MHZ_ENCODER_PIN_2,
         (range_s) {.minimum = 118, .maximum = 136},
-        1
-    );
-
-    encoder_set_data_reference_path(
-        &com_nav_radio->encoder_com_khz,
-        "sim/cockpit2/radios/actuators/com1_standby_frequency_khz"
-    );
-
-    encoder_set_data_reference_path(
-        &com_nav_radio->encoder_com_mhz,
-        "sim/cockpit2/radios/actuators/com1_standby_frequency_Mhz"
-    );
-
-    encoder_set_data_reference_path(
-        &com_nav_radio->encoder_nav_khz,
-        "sim/cockpit2/radios/actuators/nav1_standby_frequency_khz"
-    );
-
-    encoder_set_data_reference_path(
-        &com_nav_radio->encoder_nav_mhz,
+        1,
         "sim/cockpit2/radios/actuators/nav1_standby_frequency_Mhz"
     );
 }
@@ -138,7 +122,7 @@ void com_nav_radio_run(com_nav_radio_s *com_nav_radio, rref_reply_packet_s *rece
     if (received_packets[0].index == -1)
         return;
 
-    for (uint8_t i = 0; i < 15; ++i)
+    for (uint8_t i = 0; i < MAXIMUM_PACKETS_TO_RECEIVE; ++i)
     {
         switch (received_packets[i].index)
         {

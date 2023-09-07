@@ -6,9 +6,10 @@
 typedef struct analog_sensor_s
 {
     uint8_t pin;
-    float value;
+    uint16_t raw_value;
     range_s input_range;
     range_s output_range;
+    float value;
     const char *data_reference_path;
 } analog_sensor_s;
 

@@ -47,13 +47,13 @@ void analog_sensor_read(analog_sensor_s *analog_sensor)
 
 void analog_sensor_calibrate(analog_sensor_s *analog_sensor)
 {
-    uint16_t current_sensor_value = analogRead(analog_sensor->pin);
+    analog_sensor->raw_value = analogRead(analog_sensor->pin);
 
-    if (analog_sensor->input_range.minimum > current_sensor_value)
-        analog_sensor->input_range.minimum = current_sensor_value;
+    if (analog_sensor->input_range.minimum > analog_sensor->raw_value)
+        analog_sensor->input_range.minimum = analog_sensor->raw_value;
 
-    if (analog_sensor->input_range.maximum < current_sensor_value)
-        analog_sensor->input_range.maximum = current_sensor_value;
+    if (analog_sensor->input_range.maximum < analog_sensor->raw_value)
+        analog_sensor->input_range.maximum = analog_sensor->raw_value;
 }
 
 void analog_sensor_send_update(analog_sensor_s *analog_sensor)

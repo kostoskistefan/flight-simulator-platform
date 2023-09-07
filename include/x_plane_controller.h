@@ -2,6 +2,7 @@
 #define X_PLANE_CONTROLLER_H
 
 #include "yoke.h"
+#include "button.h"
 #include "com_nav_radio.h"
 #include "elevator_trim.h"
 #include "engine_controls.h"
@@ -10,6 +11,8 @@
 
 typedef struct x_plane_controller_s
 {
+    button_s button_calibration_mode;
+
     yoke_s yoke;
     com_nav_radio_s com_nav_radio;
     elevator_trim_s elevator_trim;
