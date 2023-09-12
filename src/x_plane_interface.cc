@@ -96,35 +96,4 @@ void x_plane_interface_poll_for_packet(rref_reply_packet_s *packets)
     }
 
     else packets[0].index = -1;
-
-    // uint16_t packet_size = udp.parsePacket();
-
-    // if (!packet_size)
-    // {
-    //     packets[0].index = -1;
-    //     return;
-    // }
-
-    // udp.read(udp_receive_buffer, packet_size);
-
-    // if (strncmp(udp_receive_buffer, "RREF", 5) != 0)
-    // {
-    //     packets[0].index = -1;
-    //     return;
-    // }
-
-    // for (uint16_t i = 0, offset = 5; offset < packet_size; ++i, offset += 8)
-    // {
-    //     // packets[i] = {
-    //     //     .index = (int8_t) (*((int *) (udp_receive_buffer + offset))),
-    //     //     .value = *((float *) (udp_receive_buffer + offset + 4))
-    //     // };
-
-    //     Serial.print("Packet I: ");
-    //     Serial.print(i);
-    //     Serial.print(", Index: ");
-    //     Serial.print((int8_t) (*((int *) (udp_receive_buffer + offset))));
-    //     Serial.print(", Value: ");
-    //     Serial.println(*((float *) (udp_receive_buffer + offset + 4)));
-    // }
 }
