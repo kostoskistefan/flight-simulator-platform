@@ -3,7 +3,7 @@
 
 #include "button.h"
 #include "encoder.h"
-#include "LedControl_SW_SPI.h"
+#include "LedControl_HW_SPI.h"
 #include "x_plane_interface.h"
 
 typedef struct com_nav_radio_s
@@ -19,7 +19,7 @@ typedef struct com_nav_radio_s
     encoder_s encoder_nav_mhz;
     encoder_s encoder_nav_khz;
 
-    LedControl_SW_SPI display;
+    LedControl_HW_SPI display;
 } com_nav_radio_s;
 
 void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio);

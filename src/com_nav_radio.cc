@@ -9,7 +9,7 @@ void com_nav_radio_set_frequency_for_display(
 
 void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
 {
-    com_nav_radio->display.begin(SPI_MOSI, SPI_SCLK, COM_NAV_RADIO_DISPLAY_PIN_CS, 4);
+    com_nav_radio->display.begin(COM_NAV_RADIO_DISPLAY_PIN_CS, 4);
 
     for (uint8_t i = 0; i < 4; ++i)
     {

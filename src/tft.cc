@@ -14,7 +14,7 @@ void tft_initialize(void)
 {
     lv_init();
     tft.begin();
-    tft.setRotation(1);
+    tft.setRotation(3);
 
     lv_disp_draw_buf_init(&draw_buf, buf, NULL, TFT_WIDTH * TFT_HEIGHT / 10);
 
