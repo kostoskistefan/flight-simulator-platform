@@ -1,5 +1,8 @@
+-xc++
+-std=c++17
 -I/home/kostoskistefan/Projects/flight-simulator-platform/include
 -I/home/kostoskistefan/Projects/flight-simulator-platform/src
+-I/home/kostoskistefan/Projects/flight-simulator-platform/.pio/libdeps/esp32dev/LedControl/src
 -I/home/kostoskistefan/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include
 -I/home/kostoskistefan/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include
 -I/home/kostoskistefan/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos

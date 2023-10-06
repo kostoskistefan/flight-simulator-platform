@@ -83,7 +83,7 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
         &com_nav_radio->encoder_nav_mhz,
         COM_NAV_RADIO_NAV_MHZ_ENCODER_PIN_1,
         COM_NAV_RADIO_NAV_MHZ_ENCODER_PIN_2,
-        (range_s) {.minimum = 118, .maximum = 136},
+        (range_s) {.minimum = 108, .maximum = 117},
         1,
         "sim/cockpit2/radios/actuators/nav1_standby_frequency_Mhz"
     );

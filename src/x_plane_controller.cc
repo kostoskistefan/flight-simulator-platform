@@ -56,8 +56,8 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
     {
         SENSOR_INDEX_YOKE_ROLL,
         SENSOR_INDEX_YOKE_PITCH,
-        SENSOR_INDEX_ENGINE_CONTROLS_MIXTURE,
         SENSOR_INDEX_ENGINE_CONTROLS_THROTTLE,
+        SENSOR_INDEX_ENGINE_CONTROLS_MIXTURE,
         SENSOR_INDEX_LAST
     } sensor_index_e;
 
@@ -99,6 +99,16 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
                 );
                 break;
 
+            case SENSOR_INDEX_ENGINE_CONTROLS_THROTTLE:
+                engine_controls_calibrate_throttle(&x_plane_controller->engine_controls);
+                tft_sensor_calibration(
+                    x_plane_controller->engine_controls.throttle.raw_value,
+                    x_plane_controller->engine_controls.throttle.input_range.minimum,
+                    x_plane_controller->engine_controls.throttle.input_range.maximum,
+                    "Engine Controls Throttle"
+                );
+                break;
+
             case SENSOR_INDEX_ENGINE_CONTROLS_MIXTURE:
                 engine_controls_calibrate_mixture(&x_plane_controller->engine_controls);
                 tft_sensor_calibration(
@@ -109,14 +119,7 @@ void x_plane_controller_calibrate(x_plane_controller_s *x_plane_controller)
                 );
                 break;
 
-            case SENSOR_INDEX_ENGINE_CONTROLS_THROTTLE:
-                engine_controls_calibrate_throttle(&x_plane_controller->engine_controls);
-                tft_sensor_calibration(
-                    x_plane_controller->engine_controls.throttle.raw_value,
-                    x_plane_controller->engine_controls.throttle.input_range.minimum,
-                    x_plane_controller->engine_controls.throttle.input_range.maximum,
-                    "Engine Controls Throttle"
-                );
+            default:
                 break;
         }
 
