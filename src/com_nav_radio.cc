@@ -21,25 +21,25 @@ void com_nav_radio_initialize(com_nav_radio_s *com_nav_radio)
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/com1_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_COM_FREQUENCY,
-        10
+        5 
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/com1_stdby_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_COM_STANDBY_FREQUENCY,
-        10
+        5 
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/nav1_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_NAV_FREQUENCY,
-        10
+        5 
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit/radios/nav1_stdby_freq_hz",
         DATA_REFERENCE_REPLY_INDEX_NAV_STANDBY_FREQUENCY,
-        10
+        5 
     );
 
     button_initialize(
