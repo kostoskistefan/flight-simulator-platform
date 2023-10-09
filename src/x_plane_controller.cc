@@ -16,6 +16,9 @@ void x_plane_controller_initialize(x_plane_controller_s *x_plane_controller)
     );
 
     uint8_t boot_into_calibration_mode = !digitalRead(x_plane_controller->button_calibration_mode.pin);
+    
+    tft_initialize();
+    tft_wait_for_connection();
 
     x_plane_interface_initialize();
     
@@ -27,7 +30,8 @@ void x_plane_controller_initialize(x_plane_controller_s *x_plane_controller)
         x_plane_controller->received_packets[i].value = -1;
     }
 
-    tft_initialize();
+    tft_clear_screen();
+
     yoke_initialize(&x_plane_controller->yoke, boot_into_calibration_mode);
     com_nav_radio_initialize(&x_plane_controller->com_nav_radio);
     elevator_trim_initialize(&x_plane_controller->elevator_trim);

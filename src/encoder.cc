@@ -19,7 +19,7 @@ void encoder_initialize(
     encoder->position = 0;
     encoder->previous_position = 0;
 
-    encoder->value = value_range.minimum;
+    encoder->value = 0;
     encoder->value_range = value_range;
     encoder->value_adjustment_amount = value_adjustment_amount;
 

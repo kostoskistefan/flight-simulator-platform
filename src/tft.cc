@@ -40,6 +40,17 @@ void tft_timer_handler(void)
     lv_timer_handler();
 }
 
+void tft_wait_for_connection(void)
+{
+    tft_clear_screen();
+    static lv_obj_t *wait_label = lv_label_create(lv_scr_act());
+    lv_label_set_text(wait_label, "Waiting for connection...");
+    lv_obj_align(wait_label, LV_ALIGN_CENTER, 0, 40);
+    lv_obj_set_style_text_font(wait_label, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_color(wait_label, lv_color_white(), LV_PART_MAIN);
+    lv_timer_handler();
+}
+
 void tft_sensor_calibration(uint16_t value, int32_t minimum, int32_t maximum, const char *sensor_name)
 {
     static lv_obj_t *calibrate_label = lv_label_create(lv_scr_act());

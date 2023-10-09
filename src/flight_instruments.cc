@@ -20,37 +20,37 @@ void flight_instruments_initialize(flight_instruments_s *flight_instruments)
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/airspeed_kts_pilot",
         DATA_REFERENCE_REPLY_INDEX_AIRSPEED,
-        2 
+        2
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/altitude_ft_pilot",
         DATA_REFERENCE_REPLY_INDEX_ALTITUDE,
-        2 
+        2
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/roll_vacuum_deg_pilot",
         DATA_REFERENCE_REPLY_INDEX_ATTITUDE_ROLL,
-        2 
+        2
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/pitch_vacuum_deg_pilot",
         DATA_REFERENCE_REPLY_INDEX_ATTITUDE_PITCH,
-        2 
+        2
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/heading_electric_deg_mag_pilot",
         DATA_REFERENCE_REPLY_INDEX_HEADING,
-        2 
+        2
     );
 
     x_plane_interface_subscribe_to_data_reference(
         "sim/cockpit2/gauges/indicators/vvi_fpm_pilot",
         DATA_REFERENCE_REPLY_INDEX_VERTICAL_SPEED,
-        2 
+        2
     );
 }
 

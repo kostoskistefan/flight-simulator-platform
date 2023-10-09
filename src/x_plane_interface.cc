@@ -17,8 +17,8 @@ void x_plane_interface_initialize(void)
 
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
-    #warning Add WiFi Timeout
-    
+#warning Add WiFi Timeout
+
     while (WiFi.status() != WL_CONNECTED)
         delay(500);
 
@@ -73,27 +73,29 @@ void x_plane_interface_poll_for_packet(rref_reply_packet_s *packets)
 
     int packetSize = udp.parsePacket();
 
-    if (packetSize)
+    if (!packetSize)
     {
-        udp.read(udp_receive_buffer, packetSize);
-        String type = String(udp_receive_buffer).substring(0, 4);
-
-        if (type == "RREF")
-        {
-            for (int offset = 5; offset < packetSize; offset += 8)
-            {
-                int index = *((int *)(udp_receive_buffer + offset));
-                float value = *((float *)(udp_receive_buffer + offset + 4));
-
-                packets[(offset - 5) / 8] = {
-                    .index = (int8_t) ((value == 0) ? -1 : index),
-                    .value = value
-                };
-            }
-        }
-        
-        else packets[0].index = -1;
+        packets[0].index = -1;
+        return;
     }
 
-    else packets[0].index = -1;
+    udp.read(udp_receive_buffer, packetSize);
+    String type = String(udp_receive_buffer).substring(0, 4);
+
+    if (type != "RREF")
+    {
+        packets[0].index = -1;
+        return;
+    }
+
+    for (int offset = 5; offset < packetSize; offset += 8)
+    {
+        int index = *((int *) (udp_receive_buffer + offset));
+        float value = *((float *) (udp_receive_buffer + offset + 4));
+
+        packets[(offset - 5) / 8] = {
+            .index = (int8_t) ((value == 0) ? -1 : index),
+            .value = value
+        };
+    }
 }
